@@ -4,6 +4,8 @@ import "./App.css";
 import Auth from "./Auth";
 import PDFReport from "./PDFReport";
 
+const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
+
 const ALL_SYMPTOMS = [
   "fever", "chills", "headache", "nausea", "sweating", "vomiting", "fatigue",
   "weakness", "stomach_pain", "loss_of_appetite", "constipation", "diarrhea",
@@ -70,14 +72,14 @@ function App() {
 
   const fetchHistory = useCallback(async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/diagnosis/history", { headers: getHeaders() });
+      const res = await axios.get(`${API_URL}/diagnosis/history`, { headers: getHeaders() });
       setHistory(res.data.history || []);
     } catch (err) { console.log(err); }
   }, [getHeaders]);
 
   const fetchStats = useCallback(async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/diagnosis/stats", { headers: getHeaders() });
+      const res = await axios.get(`${API_URL}/diagnosis/stats`, { headers: getHeaders() });
       setStats(res.data);
     } catch (err) { console.log(err); }
   }, [getHeaders]);
@@ -105,12 +107,12 @@ function App() {
     setError("");
     setLoading(true);
     try {
-      const res = await axios.post("http://127.0.0.1:8000/diagnose", {
+      const res = await axios.post(`${API_URL}/diagnose`, {
         patient_name: name, age: parseInt(age), symptoms: selected
       });
       setResult(res.data);
 
-      await axios.post("http://127.0.0.1:8000/diagnosis/save", {
+      await axios.post(`${API_URL}/diagnosis/save`, {
         patient_name: name, age: parseInt(age), gender,
         symptoms: selected,
         predicted_disease: res.data.predicted_disease,

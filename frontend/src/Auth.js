@@ -20,9 +20,11 @@ function Auth({ onLogin }) {
     setLoading(true);
 
     try {
-      const url = isLogin
-        ? "http://127.0.0.1:8000/auth/login"
-        : "http://127.0.0.1:8000/auth/signup";
+      const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
+const url = isLogin
+  ? `${API_URL}/auth/login`
+  : `${API_URL}/auth/signup`;
+      
 
       const body = isLogin
         ? { email, password }
