@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from app.database.db import init_db
 from app.routes.diagnosis import router as diagnosis_router
 from app.routes.auth import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,6 +20,15 @@ app.add_middleware(
 )
 app.include_router(diagnosis_router, prefix="/diagnosis", tags=["diagnosis"])
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
+
+@app.on_event("startup")
+def startup_event():
+    try:
+        init_db()
+        print("Database tables ready!")
+    except Exception as e:
+        print(f"Database init error: {e}")
+
 # Models load karo
 model = joblib.load("ml/disease_model.pkl")
 label_encoder = joblib.load("ml/label_encoder.pkl")
